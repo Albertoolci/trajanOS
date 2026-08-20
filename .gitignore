@@ -1,0 +1,22 @@
+# .gitignore
+*.o
+*.bin
+*.elf
+*.img
+*.iso
+
+build/
+out/
+
+config.h
+config.private.h
+*.key
+*.pem
+*.secret
+
+*1.pdf
+*.log
+
+.vscode/
+.idea/
+.DS_Store
