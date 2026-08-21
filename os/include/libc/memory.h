@@ -4,7 +4,9 @@
 
 #include <stddef.h>
 
-void memcpy(char* source, char* dest, int no_bytes);
-void memset(char* dest, char val, int len);
+typedef unsigned int uintptr_t;
+
+void* memcpy(void *dest, const void *source, int number_bytes);
+void* memset(void *dest, int val, int number_bytes);
 
 #endif
