@@ -1,15 +1,18 @@
+// kernel.c
+#include "../include/drivers/ports.h"
+#include "../include/drivers/screen.h"
+
 void kernel_main() {
-    char* vga = (char*) 0xB8000;
+    clear_screen();
 
-    for (int i = 0; i < 80 * 25 * 2; i += 2) {
-        vga[i]     = ' ';
-        vga[i + 1] = 0x0F;
-    }
+    kprintf("=== %s Booted Successfully ===\n", "TrajanOS");
+    kprintf("Kernel Base: %x\n", 0x0500);
+    kprintf("Video RAM:   %x\n", VIDEO_ADDRESS);
+    kprintf("Status:      %s (Code: %d)\n\n", "READY", 200);
 
-    char* msg = "trajanOS";
-    for (int i = 0; msg[i] != '\0'; i++) {
-        vga[i * 2]     = msg[i];
-        vga[i * 2 + 1] = 0x0F;
+    // Scrolling test
+    for (int i = 1; i <= 20; i++) {
+        kprintf("Line test %d/20 - TrajanOS Console Output\n", i);
     }
 
     while(1);
