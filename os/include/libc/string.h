@@ -4,7 +4,7 @@
 
 int strlen(const char* s);
 void reverse(char* s);
-void itoa(int n, char* str);
-void hex_to_ascii(int n, char* str);
+int itoa(int n, char* str, int max_len);
+int hex_to_ascii(unsigned int n, char* str, int max_len);
 
 #endif
