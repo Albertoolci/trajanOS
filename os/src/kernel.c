@@ -15,5 +15,7 @@ void kernel_main() {
         kprintf("Line test %d/20 - TrajanOS Console Output\n", i);
     }
 
+    kprintf("\n\n=== Scrolling Test Successful, TrajanOS ===\n");
+
     while(1);
 }
