@@ -22,5 +22,7 @@ SECTIONS
         *(.bss)     /* Include the .bss section from ALL (*) input object files */
     }
 
-    ASSERT(. <= 0x2300, "Error: Kernel is heavier than 7.5 KBytes (15 sectors)!")
+    _kernel_end = .;
+
+    ASSERT(. <= 0x10500, "Error: Kernel is heavier than 64 KBytes (128 sectors)!")
 }

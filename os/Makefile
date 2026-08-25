@@ -1,6 +1,6 @@
 # OS Makefile
 BUILD_DIR=../build/os
-TARGET=$(BUILD_DIR)/sample.o
+TARGET=$(BUILD_DIR)/kernel.bin
 
 ASM_SRCS := $(shell find src -type f -name '*.asm')
 C_SRCS   := $(shell find src -type f -name '*.c')
