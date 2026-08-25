@@ -13,8 +13,8 @@ idt_ptr_t idt_ptr;
  * @return None
  */
 void set_idt_gate(int n, unsigned int handler) {
-    idt[n].low_offset = handler;
-    idt[n].high_offset = (handler >> 16);
+    idt[n].low_offset = handler & 0xFFFF;
+    idt[n].high_offset = (handler >> 16) & 0xFFFF;
     idt[n].sel = 0x08; // Kernel code segment selector
     idt[n].always0 = 0;
     idt[n].flags = 0x8E; // Present, ring 0    
@@ -22,12 +22,28 @@ void set_idt_gate(int n, unsigned int handler) {
 
 /**
  * @brief Initializes the Interrupt Descriptor Table (IDT).
- * @details This function sets up the IDT by defining its size and base address, clearing all entries, and loading the IDT pointer into the CPU using the `lidt` instruction.
+ * @details This function sets up the IDT by defining its size and base address.
  * @return None
  */
 void init_idt() {
     idt_ptr.limit = sizeof(idt_entry_t) * IDT_ENTRIES - 1;
     idt_ptr.base = (unsigned int)&idt;
-    memset(&idt, 0, idt_ptr.limit + 1);
+}
+
+/**
+ * @brief Cleans the Interrupt Descriptor Table (IDT).
+ * @details This function clears all entries in the IDT by setting them to zero.
+ * @return None
+ */
+void clean_idt() {
+    memset(&idt, 0, sizeof(idt_entry_t) * IDT_ENTRIES);
+}
+
+/**
+ * @brief Loads the Interrupt Descriptor Table (IDT) into the CPU.
+ * @details This function uses the `lidt` assembly instruction to load the IDT pointer into the CPU's IDT register, enabling the CPU to use the configured IDT for handling interrupts.
+ * @return None
+ */
+void load_idt() {
     __asm__ volatile("lidt %0" :: "m"(idt_ptr));
 }

@@ -21,5 +21,7 @@ typedef struct {
 
 void set_idt_gate(int n, unsigned int handler);
 void init_idt();
+void clean_idt();
+void load_idt();
 
 #endif

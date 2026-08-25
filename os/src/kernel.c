@@ -1,21 +1,27 @@
 // kernel.c
 #include "../include/drivers/ports.h"
 #include "../include/drivers/screen.h"
+#include "../include/cpu/isr.h"
 
 void kernel_main() {
     clear_screen();
 
-    kprintf("=== %s Booted Successfully ===\n", "TrajanOS");
+    kprintf("TrajanOS Booted Successfully\n\n");
     kprintf("Kernel Base: %x\n", 0x0500);
-    kprintf("Video RAM:   %x\n", VIDEO_ADDRESS);
-    kprintf("Status:      %s (Code: %d)\n\n", "READY", 200);
+    kprintf("Video RAM:   %x\n\n", VIDEO_ADDRESS);
 
-    // Scrolling test
-    for (int i = 1; i <= 20; i++) {
-        kprintf("Line test %d/20 - TrajanOS Console Output\n", i);
-    }
+    kprintf("Initializing Interrupts (ISRs)...\n");
+    isr_install();
+    kprintf("IDT Loaded Successfully!\n\n");
 
-    kprintf("\n\n=== Scrolling Test Successful, TrajanOS ===\n");
+    kprintf("Testing ISR 6 (Invalid Opcode)...\n");
+    __asm__ volatile("ud2");
+    
+    // If ever reached, it means the CPU did not catch the exception, which is an error.
+    kprintf("ERROR: CPU did not catch the exception!\n");
+
+    
+    
 
     while(1);
 }
