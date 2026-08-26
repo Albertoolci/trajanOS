@@ -23,6 +23,34 @@ extern isr_handler
         jmp isr_common_stub
 %endmacro
 
+%macro IRQ 2
+    global irq%1
+    irq%1:
+        cli
+        push byte 0         ; fake error code (0) for IRQs, as they do not have an error code
+        push byte %2        ; IDT vector number for the IRQ (32..47)
+        jmp irq_common_stub
+%endmacro
+
+; IRQ instances for IRQs 0 to 15, mapped to IDT vectors 32 to 47
+IRQ 0, 32
+IRQ 1, 33
+IRQ 2, 34
+IRQ 3, 35
+IRQ 4, 36
+IRQ 5, 37
+IRQ 6, 38
+IRQ 7, 39
+IRQ 8, 40
+IRQ 9, 41
+IRQ 10, 42
+IRQ 11, 43
+IRQ 12, 44
+IRQ 13, 45
+IRQ 14, 46
+IRQ 15, 47
+
+
 ISR_NOERRCODE 0    ; 0: Divide By Zero Exception
 ISR_NOERRCODE 1    ; 1: Debug Exception
 ISR_NOERRCODE 2    ; 2: Non Maskable Interrupt (NMI)
@@ -84,3 +112,33 @@ isr_common_stub:
     add esp, 8          ; Cleans the stack after the call to isr_handler (removes int_no and err_code pushed by the stub, 2 * 4 bytes)
     ; sti                 ; Enables interrupts
     iret                ; Returns from the interrupt, restoring eip, cs, eflags, useresp, and ss from the stack
+
+; Common handler stub for all IRQs. This code is executed after the CPU pushes the registers and before calling the C handler.
+extern irq_handler
+
+irq_common_stub:
+    pusha
+
+    mov ax, ds
+    push eax
+
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    push esp
+    call irq_handler
+    add esp, 4
+
+    pop eax
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    popa
+    add esp, 8
+    ; sti
+    iret

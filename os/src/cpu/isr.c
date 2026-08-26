@@ -2,6 +2,10 @@
 #include "../../include/cpu/isr.h"
 #include "../../include/drivers/screen.h"
 #include "../../include/cpu/idt.h"
+#include "../../include/cpu/pic.h"
+
+// Array of function pointers to hold custom interrupt handlers for each interrupt number (0-255).
+isr_t interrupt_handlers[256];
 
 // Exception messages corresponding to the 32 CPU exceptions.
 static const char *exception_messages[] = {
@@ -35,7 +39,7 @@ static const char *exception_messages[] = {
 
 /**
  * @brief Relates all stubs to its corresponding interrupt index in the IDT.
- * @details This function sets up the Interrupt Descriptor Table (IDT) entries for the 32 interrupts (0-31). It uses the set_idt_gate function to configure each entry in the IDT.
+ * @details This function sets up the Interrupt Descriptor Table (IDT) entries for the 32 CPU interrupts (0-31) and the 16 IRQs (32-47). It uses the set_idt_gate function to configure each entry in the IDT.
  * @return None
  */
 void isr_install() {
@@ -75,6 +79,27 @@ void isr_install() {
     set_idt_gate(30, (unsigned int)isr30);
     set_idt_gate(31, (unsigned int)isr31);
 
+    set_idt_gate(32, (unsigned int)irq0); 
+    set_idt_gate(33, (unsigned int)irq1);
+    set_idt_gate(34, (unsigned int)irq2); 
+    set_idt_gate(35, (unsigned int)irq3);
+    set_idt_gate(36, (unsigned int)irq4);  
+    set_idt_gate(37, (unsigned int)irq5);
+    set_idt_gate(38, (unsigned int)irq6);  
+    set_idt_gate(39, (unsigned int)irq7);
+    set_idt_gate(40, (unsigned int)irq8);  
+    set_idt_gate(41, (unsigned int)irq9);
+    set_idt_gate(42, (unsigned int)irq10); 
+    set_idt_gate(43, (unsigned int)irq11);
+    set_idt_gate(44, (unsigned int)irq12); 
+    set_idt_gate(45, (unsigned int)irq13);
+    set_idt_gate(46, (unsigned int)irq14); 
+    set_idt_gate(47, (unsigned int)irq15);
+
+    for (int i = 0; i < 256; i++) {
+        interrupt_handlers[i] = 0;
+    }
+
     load_idt();
 }
 
@@ -99,4 +124,42 @@ void isr_handler(registers_t *regs) {
         // Halts the CPU if an unhandled interrupt occurs
         while(1);
     }
+}
+
+/**
+ * @brief Registers a custom interrupt handler for a specific interrupt number.
+ * @details This function allows the registration of a custom interrupt handler for a specific interrupt number. The handler is stored in the `interrupt_handlers` array, which is indexed by the interrupt number.
+ * @param n The interrupt number for which to register the handler.
+ * @param handler The interrupt handler function to register.
+ * @return None
+ */
+void register_interrupt_handler(unsigned char n, isr_t handler) {
+    interrupt_handlers[n] = handler;
+}
+
+/**
+ * @brief Handles IRQs (Interrupt Requests) from hardware devices.
+ * @details This function is called when an IRQ occurs. It checks if a custom handler is registered for the IRQ and calls it if present. After handling the IRQ, it sends an End of Interrupt (EOI) signal to the PIC to notify that the interrupt has been processed.
+ * @param regs A structure containing the CPU state at the time of the interrupt.
+ * @return None
+ */
+void irq_handler(registers_t *regs) {
+    if (interrupt_handlers[regs->int_no] != 0) {
+        isr_t handler = interrupt_handlers[regs->int_no];
+        handler(regs);
+    }
+
+    pic_send_eoi(regs->int_no - 32);
+}
+
+/**
+ * @brief Initializes the interrupt system by installing ISRs and remapping the PIC.
+ * @details This function sets up the interrupt system by installing the Interrupt Service Routines (ISRs) and remapping the Programmable Interrupt Controller (PIC) to avoid conflicts with CPU exceptions. It ensures that the system is ready to handle interrupts from both software and hardware sources.
+ * @return None
+ */
+void interrupts_init() {
+    isr_install();
+    pic_remap();
+
+    // __asm__ volatile("sti");
 }

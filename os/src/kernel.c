@@ -2,6 +2,7 @@
 #include "../include/drivers/ports.h"
 #include "../include/drivers/screen.h"
 #include "../include/cpu/isr.h"
+#include "../include/cpu/timer.h"
 
 void kernel_main() {
     clear_screen();
@@ -11,8 +12,16 @@ void kernel_main() {
     kprintf("Video RAM:   %x\n\n", VIDEO_ADDRESS);
 
     kprintf("Initializing Interrupts (ISRs)...\n");
-    isr_install();
+    interrupts_init();
     kprintf("IDT Loaded Successfully!\n\n");
+
+    init_timer(100);
+    __asm__ volatile("sti");
+
+    while (1) {
+        __asm__ volatile("hlt"); // Pauses the CPU until the next interrupt
+    }
+
 
     kprintf("Testing ISR 6 (Invalid Opcode)...\n");
     __asm__ volatile("ud2");

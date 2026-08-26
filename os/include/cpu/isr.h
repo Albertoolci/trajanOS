@@ -13,6 +13,8 @@ typedef struct {
     unsigned int eip, cs, eflags, useresp, ss;            // Pushed automatically by the CPU
 } registers_t;
 
+typedef void (*isr_t)(registers_t*);
+
 extern void isr0();
 extern void isr1();
 extern void isr2();
@@ -46,7 +48,31 @@ extern void isr29();
 extern void isr30();
 extern void isr31();
 
+extern void irq0();
+extern void irq1();
+extern void irq2();
+extern void irq3();
+extern void irq4();
+extern void irq5();
+extern void irq6();
+extern void irq7();
+extern void irq8();
+extern void irq9();
+extern void irq10();
+extern void irq11();
+extern void irq12();
+extern void irq13();
+extern void irq14();
+extern void irq15();
+
+extern isr_t interrupt_handlers[256];
+
 void isr_install();
 void isr_handler(registers_t *regs);
+
+void irq_handler(registers_t *regs);
+void register_interrupt_handler(unsigned char n, isr_t handler);
+
+void interrupts_init();
 
 #endif
