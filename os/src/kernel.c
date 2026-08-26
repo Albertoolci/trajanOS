@@ -3,6 +3,7 @@
 #include "../include/drivers/screen.h"
 #include "../include/cpu/isr.h"
 #include "../include/cpu/timer.h"
+#include "../include/drivers/keyboard.h"
 
 void kernel_main() {
     clear_screen();
@@ -15,6 +16,7 @@ void kernel_main() {
     interrupts_init();
     kprintf("IDT Loaded Successfully!\n\n");
 
+    init_keyboard();
     init_timer(100);
     __asm__ volatile("sti");
 
