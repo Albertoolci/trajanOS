@@ -37,7 +37,7 @@ make clean
 ```
 
 ## Repository Structure
-
+### Kernel simplified structure
 ```
 .
 ├── os/
@@ -45,4 +45,20 @@ make clean
 │   ├── src/        # Implementation files (.c) and assembly stubs (.asm)
 │   └── linker.ld   # Linker script defining kernel memory layout
 └── build/          # Compiled object files (.o) and final kernel binary
+```
+
+### Directory structure
+```
+.
+├── bootloader
+│
+└── os
+    ├── include
+    │   ├── cpu
+    │   ├── drivers
+    │   └── libc
+    └── src
+        ├── cpu
+        ├── drivers
+        └── libc
 ```
