@@ -1,5 +1,6 @@
 // idt.c
 #include "../../include/cpu/idt.h"
+#include "../../include/libc/memory.h"
 
 // Global Interrupt Descriptor Table (IDT) and IDT pointer
 idt_entry_t idt[IDT_ENTRIES];
