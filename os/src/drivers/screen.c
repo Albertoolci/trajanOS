@@ -18,7 +18,8 @@ static int handle_scrolling(int cursor_offset);
  */
 void clear_screen() {
     char *vga = (char*) VIDEO_ADDRESS;
-    for (int i = 0; i < MAX_ROWS * MAX_COLS; i = i + 2) {
+    int screen_size = MAX_ROWS * MAX_COLS * 2; // Each character cell consists of 2 bytes (character + attribute)
+    for (int i = 0; i < screen_size; i = i + 2) {
         vga[i] = ' ';
         vga[i + 1] = WHITE_ON_BLACK;
     }
