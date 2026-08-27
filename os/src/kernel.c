@@ -4,6 +4,7 @@
 #include "../include/cpu/isr.h"
 #include "../include/cpu/timer.h"
 #include "../include/drivers/keyboard.h"
+#include "../include/drivers/shell.h"
 
 void kernel_main() {
     clear_screen();
@@ -15,8 +16,10 @@ void kernel_main() {
     kprintf("Initializing Interrupts (ISRs)...\n");
     interrupts_init();
     kprintf("IDT Loaded Successfully!\n\n");
+    
 
     init_keyboard();
+    shell_init();
     init_timer(100);
     __asm__ volatile("sti");
 

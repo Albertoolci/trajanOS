@@ -146,3 +146,18 @@ int hex_to_ascii(unsigned int n, char *s, int max_len) {
 
     return truncated ? -1 : 0;
 }
+
+/**
+ * @brief Compares two strings.
+ * @details This function compares the strings pointed to by `s1` and `s2`.
+ * @param s1 The first string to compare.
+ * @param s2 The second string to compare.
+ * @return An integer less than, equal to, or greater than zero if `s1` is found, respectively, to be less than, to match, or be greater than `s2`.
+ */
+int strcmp(const char* s1, const char* s2) {
+    int i = 0;
+    while (s1[i] != '\0' && s1[i] == s2[i]) {
+        i++;
+    }
+    return (unsigned char)s1[i] - (unsigned char)s2[i];;
+}

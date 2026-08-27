@@ -14,10 +14,15 @@ static unsigned int tick = 0;
  */
 static void timer_callback(registers_t *regs) {
     tick++;
+}
 
-    if (tick % 100 == 0) {
-        kprintf("Tick: %d\n", tick);
-    }
+/**
+ * @brief Returns the number of ticks since the timer was initialized.
+ * @details This function returns the current tick count, which represents the number of timer interrupts that have occurred since the timer was initialized.
+ * @return The number of ticks since the timer was initialized.
+ */
+unsigned int get_ticks() {
+    return tick;
 }
 
 /**

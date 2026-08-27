@@ -217,3 +217,24 @@ void kprintf(const char* format, ...) {
 
     va_end(args);
 }
+
+
+/**
+ * @brief Handles the backspace operation on the screen.
+ * @details This function moves the cursor back by one character position, replaces the character at that position with a space, and updates the cursor position accordingly. It ensures that the cursor does not move beyond the beginning of the screen.
+ * @param None
+ * @return None
+ */
+void backspace() {
+    int offset = get_cursor_offset();
+    if (offset == 0) {
+        return; // Cursor is at the beginning of the screen, nothing to backspace
+    }
+
+    offset -= 2; // Move back one character (2 bytes for character and attribute)
+    set_cursor_offset(offset);
+
+    char* vga = (char*) VIDEO_ADDRESS;
+    vga[offset] = ' '; // Replace the character with a space
+    vga[offset + 1] = WHITE_ON_BLACK; // Reset the color attribute
+}
