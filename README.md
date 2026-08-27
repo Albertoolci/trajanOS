@@ -10,6 +10,8 @@ A 32-bit x86 bare-metal kernel written in C and NASM assembly, built without `li
 * **8259 PIC Remapping:** Hardware IRQs mapped to vectors 32–47 to avoid overlap with CPU exceptions.
 * **PIT Timer (IRQ 0):** Programmable Interval Timer configured at 100 Hz driving system ticks.
 * **PS/2 Keyboard (IRQ 1):** Scancode handling via I/O port `0x60` with ASCII mapping.
+* **Interactive CLI Shell:** Minimal Command Line Interface supporting built-in commands (`help`, `clear`, `version`, `ticks`).
+* **Custom libc Subset:** Independent implementations of memory and string operations (`memcpy`, `strlen`, `strcmp`, `itoa`, `hex_to_ascii`).
 
 ## Requirements
 
