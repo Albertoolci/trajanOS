@@ -1,6 +1,4 @@
 ; bootloader.asm
-; A Simple Bootloader
-
 org 0x7C00  ; Bootloader is loaded at memory address 0x7C00
 bits 16     ; Set the processor to 16-bit mode (real mode)
 start: 
@@ -30,6 +28,9 @@ boot:
     mov sp, 0x7C00
 
     mov [boot_drive], dl    ; Save the boot drive provided by BIOS
+
+    ; Detect memory map via BIOS INT 15h, AX=E820h before leaving Real Mode
+    call detect_e820_memory
 
     ; Set the buffer address to 0x0500 (0x0050:0x0000)
     mov ax, 0x0050
@@ -64,6 +65,40 @@ read_loop:
 
 disk_error:
     hlt ; halt the system
+
+; Queries BIOS INT 15h AX=E820h to build the physical memory map at location 0x8000
+detect_e820_memory:
+    pusha
+    xor ax, ax              ; Guarantee DS=0 for [0x8000] mapping
+    mov ds, ax
+    mov es, ax
+
+    mov di, 0x8004          ; Entries start at 0x8004
+    xor ebx, ebx            ; EBX must be 0 to start
+    mov word [0x8000], 0    ; Reset count to 0
+
+.e820_loop:
+    mov eax, 0x0000E820
+    mov edx, 0x534D4150     ; 'SMAP' magic signature
+    mov ecx, 20             ; Request 20 bytes per entry
+    int 0x15
+    jc .e820_done           ; If carry flag is set, end of list
+    
+    cmp eax, 0x534D4150
+    jne .e820_done
+
+    inc word [0x8000]       ; Increment total count
+    add di, 20              ; Move buffer by 20 bytes
+    
+    cmp word [0x8000], 32   ; Limit to max 32 entries for safety
+    jge .e820_done
+
+    test ebx, ebx           ; If EBX is 0, list is complete
+    jnz .e820_loop
+
+.e820_done:
+    popa
+    ret
 
 ; Converts LBA (AX) -> CH (Cylinder), DH (Head), CL (Sector)
 lba_to_chs:

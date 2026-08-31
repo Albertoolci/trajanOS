@@ -5,6 +5,7 @@
 #include "../include/cpu/timer.h"
 #include "../include/drivers/keyboard.h"
 #include "../include/drivers/shell.h"
+#include "../include/mem/pmm.h"
 
 void kernel_main() {
     clear_screen();
@@ -16,7 +17,18 @@ void kernel_main() {
     kprintf("Initializing Interrupts (ISRs)...\n");
     interrupts_init();
     kprintf("IDT Loaded Successfully!\n\n");
+
+    kprintf("Initializing Physical Memory Manager (PMM)...\n");
+    pmm_init();
     
+    unsigned int total_mb = (pmm_get_total_blocks() * PMM_BLOCK_SIZE) / (1024 * 1024);
+    unsigned int free_mb = (pmm_get_free_blocks() * PMM_BLOCK_SIZE) / (1024 * 1024);
+    unsigned int used_mb = (pmm_get_used_blocks() * PMM_BLOCK_SIZE) / (1024 * 1024);
+
+    kprintf("PMM Initialized:\n");
+    kprintf("  Total RAM: %d MB (%d blocks)\n", total_mb, pmm_get_total_blocks());
+    kprintf("  Free RAM:  %d MB (%d blocks)\n", free_mb, pmm_get_free_blocks());
+    kprintf("  Used RAM:  %d MB (%d blocks)\n\n", used_mb, pmm_get_used_blocks());
 
     init_keyboard();
     shell_init();
