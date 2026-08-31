@@ -28,7 +28,16 @@ sudo apt install build-essential gcc-multilib nasm qemu-system-x86
 ## Build & Run
 ```bash
 make
-qemu-system-i386 -fda disk.img
+make run
+```
+
+### Test with `gdb`
+```bash
+make
+make gdb
+
+# On another terminal
+gdb # .gdbinit already given with some configurations
 ```
 
 ### Clean build artifacts
