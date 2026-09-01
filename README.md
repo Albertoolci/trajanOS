@@ -12,6 +12,7 @@ A 32-bit x86 bare-metal kernel written in C and NASM assembly, built without `li
 * **PS/2 Keyboard (IRQ 1):** Scancode handling via I/O port `0x60` with ASCII mapping.
 * **Interactive CLI Shell:** Minimal Command Line Interface supporting built-in commands (`help`, `clear`, `version`, `ticks`).
 * **Custom libc Subset:** Independent implementations of memory and string operations (`memcpy`, `strlen`, `strcmp`, `itoa`, `hex_to_ascii`).
+* **Physical Memory Manager (`pmm`):** Bitmap-based Physical Memory Manager with 4KB page frames and BIOS E820 mapping
 
 ## Requirements
 
