@@ -2,6 +2,12 @@
 
 A 32-bit x86 bare-metal kernel written in C and NASM assembly, built without `libc` dependencies, targeting the 32-bit x86 (IA-32) architecture and Intel 80386 (i386) processor designed and implemented entirely by me with learning purpouses.
 
+> **Note:** You can easily test and run trajanOS in a virtualized environment using **QEMU**, there is no need to do an installation on bare metal. Simply execute:
+> ```bash
+> make
+> make run
+> ```
+
 ## Current Progress
 
 * **x86 Protected Mode:** 32-bit execution environment setup.
