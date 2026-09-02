@@ -1,5 +1,6 @@
 // pmm.c
 #include "../../include/mem/pmm.h"
+#include "../../include/drivers/screen.h"
 
 static unsigned int *pmm_bitmap = 0; // Bitmap to track used/free memory blocks
 static unsigned int pmm_max_blocks = 0; // Total number of memory blocks
