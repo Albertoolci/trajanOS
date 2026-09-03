@@ -30,6 +30,10 @@ void kernel_main() {
     kprintf("  Free RAM:  %d MB (%d blocks)\n", free_mb, pmm_get_free_blocks());
     kprintf("  Used RAM:  %d MB (%d blocks)\n\n", used_mb, pmm_get_used_blocks());
 
+    kprintf("Initializing Virtual Memory Manager (VMM)...\n");
+    vmm_init();
+    kprintf("\n");
+
     init_keyboard();
     shell_init();
     init_timer(100);
