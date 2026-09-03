@@ -6,6 +6,7 @@
 #include "../include/drivers/keyboard.h"
 #include "../include/drivers/shell.h"
 #include "../include/mem/pmm.h"
+#include "../include/mem/vmm.h"
 
 void kernel_main() {
     clear_screen();
