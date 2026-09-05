@@ -152,7 +152,7 @@ int hex_to_ascii(unsigned int n, char *s, int max_len) {
  * @details This function compares the strings pointed to by `s1` and `s2`.
  * @param s1 The first string to compare.
  * @param s2 The second string to compare.
- * @return An integer less than, equal to, or greater than zero if `s1` is found, respectively, to be less than, to match, or be greater than `s2`.
+ * @return A negative integer if `s1` is less than `s2`, zero if they are equal, or a positive integer if `s1` is greater than `s2`.
  */
 int strcmp(const char* s1, const char* s2) {
     int i = 0;

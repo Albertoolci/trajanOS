@@ -8,8 +8,8 @@
  * @return None
  */
 void pic_remap() {
-    unsigned char mask1 = inb(PIC1_DATA); // Save masks
-    unsigned char mask2 = inb(PIC2_DATA);
+    uint8_t mask1 = inb(PIC1_DATA); // Save masks
+    uint8_t mask2 = inb(PIC2_DATA);
 
     outb(PIC1_COMMAND, 0x11); // Start initialization sequence in cascade mode
     outb(PIC2_COMMAND, 0x11);
@@ -33,7 +33,7 @@ void pic_remap() {
  * @param irq The interrupt request number.
  * @return None
  */
-void pic_send_eoi(unsigned char irq) {
+void pic_send_eoi(uint8_t irq) {
     if (irq >= 8) {
         outb(PIC2_COMMAND, PIC_EOI); // Send EOI to slave PIC
     }

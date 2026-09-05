@@ -4,13 +4,14 @@
 #define ISR_H
 
 #include "../../include/cpu/idt.h"
+#include <stdint.h>
 
 // Structure representing the CPU state when an interrupt occurs
 typedef struct {
-    unsigned int ds;                                      // Kernel data segment
-    unsigned int edi, esi, ebp, esp, ebx, edx, ecx, eax;  // Pushed by 'pusha'
-    unsigned int int_no, err_code;                        // Interrupt number and error code
-    unsigned int eip, cs, eflags, useresp, ss;            // Pushed automatically by the CPU
+    uint32_t ds;                                      // Kernel data segment
+    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;  // Pushed by 'pusha'
+    uint32_t int_no, err_code;                        // Interrupt number and error code
+    uint32_t eip, cs, eflags, useresp, ss;            // Pushed automatically by the CPU
 } registers_t;
 
 typedef void (*isr_t)(registers_t*);
@@ -71,7 +72,7 @@ void isr_install();
 void isr_handler(registers_t *regs);
 
 void irq_handler(registers_t *regs);
-void register_interrupt_handler(unsigned char n, isr_t handler);
+void register_interrupt_handler(uint8_t n, isr_t handler);
 
 void interrupts_init();
 

@@ -136,8 +136,8 @@ static int get_cursor_offset() {
  */
 static void set_cursor_offset(int offset) {
     offset = offset / 2;
-    unsigned char reg_high = (unsigned char)(offset >>8);
-    unsigned char reg_low = (unsigned char)offset;
+    uint8_t reg_high = (uint8_t)(offset >>8);
+    uint8_t reg_low = (uint8_t)(offset & 0xFF);
     outb(REG_SCREEN_CTRL, 14);
     outb(REG_SCREEN_DATA, reg_high);
     outb(REG_SCREEN_CTRL, 15);

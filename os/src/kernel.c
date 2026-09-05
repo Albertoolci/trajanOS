@@ -22,9 +22,9 @@ void kernel_main() {
     kprintf("Initializing Physical Memory Manager (PMM)...\n");
     pmm_init();
     
-    unsigned int total_mb = (pmm_get_total_blocks() * PMM_BLOCK_SIZE) / (1024 * 1024);
-    unsigned int free_mb = (pmm_get_free_blocks() * PMM_BLOCK_SIZE) / (1024 * 1024);
-    unsigned int used_mb = (pmm_get_used_blocks() * PMM_BLOCK_SIZE) / (1024 * 1024);
+    uint32_t total_mb = (pmm_get_total_blocks() * PMM_BLOCK_SIZE) / (1024 * 1024);
+    uint32_t free_mb = (pmm_get_free_blocks() * PMM_BLOCK_SIZE) / (1024 * 1024);
+    uint32_t used_mb = (pmm_get_used_blocks() * PMM_BLOCK_SIZE) / (1024 * 1024);
 
     kprintf("PMM Initialized:\n");
     kprintf("  Total RAM: %d MB (%d blocks)\n", total_mb, pmm_get_total_blocks());

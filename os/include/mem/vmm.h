@@ -2,6 +2,7 @@
 #ifndef VMM_H
 #define VMM_H
 
+#include <stdint.h>
 
 // Virtual base address of the higher-half kernel. See KERNEL_VIRTUAL_BASE in os/linker.ld and os/src/kernel_entry.asm
 #define KERNEL_VIRTUAL_BASE 0xC0000000

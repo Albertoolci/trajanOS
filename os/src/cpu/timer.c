@@ -4,7 +4,7 @@
 #include "../../include/cpu/isr.h"
 #include "../../include/drivers/ports.h"
 
-static unsigned int tick = 0;
+static uint32_t tick = 0;
 
 /**
  * @brief Callback function for the timer interrupt.
@@ -21,7 +21,7 @@ static void timer_callback(registers_t *regs) {
  * @details This function returns the current tick count, which represents the number of timer interrupts that have occurred since the timer was initialized.
  * @return The number of ticks since the timer was initialized.
  */
-unsigned int get_ticks() {
+uint32_t get_ticks() {
     return tick;
 }
 
@@ -31,11 +31,11 @@ unsigned int get_ticks() {
  * @param frequency The desired frequency of timer interrupts in Hertz (Hz).
  * @return None
  */
-void init_timer(unsigned int frequency) {
+void init_timer(uint32_t frequency) {
     register_interrupt_handler(32, timer_callback);
-    unsigned int divisor = 1193180 / frequency;
-    unsigned char low = (unsigned char)(divisor & 0xFF);
-    unsigned char high = (unsigned char)((divisor >> 8) & 0xFF);
+    uint32_t divisor = 1193180 / frequency;
+    uint8_t low = (uint8_t)(divisor & 0xFF);
+    uint8_t high = (uint8_t)((divisor >> 8) & 0xFF);
     outb(0x43, 0x36); // Command byte: 0x36 sets the timer to mode 3 (square wave generator)
     outb(0x40, low);
     outb(0x40, high);

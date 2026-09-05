@@ -2,8 +2,7 @@
 #include "../../include/drivers/screen.h"
 
 // Page Directory must be 4KB aligned (4096 bytes)
-__attribute__((aligned(4096))) static unsigned int page_directory[1024];
-
+__attribute__((aligned(4096))) static uint32_t page_directory[1024];
 /**
  * @brief Initializes the Virtual Memory Manager (VMM) and enables kernel paging with PSE.
  * @details Sets up a Page Directory using 4MB PSE (Page Size Extension) pages that maps
@@ -47,7 +46,7 @@ void vmm_init() {
     __asm__ volatile (
         "mov %0, %%eax\n\t"
         "mov %%eax, %%cr3"
-        : : "r" ((unsigned int)page_directory - KERNEL_VIRTUAL_BASE)
+        : : "r" ((uint32_t)page_directory - KERNEL_VIRTUAL_BASE)
         : "eax"
     );
 

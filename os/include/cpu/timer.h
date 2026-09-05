@@ -2,7 +2,9 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-void init_timer(unsigned int frequency);
-unsigned int get_ticks();
+#include <stdint.h>
+
+void init_timer(uint32_t frequency);
+uint32_t get_ticks();
 
 #endif

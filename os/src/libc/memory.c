@@ -16,8 +16,8 @@ void* memcpy(void *dest, const void *source, int number_bytes) {
 
     // If source, destination and number of bytes are alligned with a DWORD (4 bytes), copy 4 bytes at a time
     if ((d % 4 == 0) && (s % 4 == 0) && (number_bytes % 4 == 0)) {
-        unsigned int *d4 = (unsigned int *)d;
-        const unsigned int *s4 = (const unsigned int *)s;
+        uint32_t *d4 = (uint32_t *)d;
+        const uint32_t *s4 = (const uint32_t *)s;
         for (int i = 0; i < number_bytes / 4; i++) {
             d4[i] = s4[i];
         }
@@ -25,14 +25,14 @@ void* memcpy(void *dest, const void *source, int number_bytes) {
 
     // If source, destination and number of bytes are alligned with a WORD (2 bytes), copy 2 bytes at a time
     else if ((d % 2 == 0) && (s % 2 == 0) && (number_bytes % 2 == 0)) {
-        unsigned short *d2 = (unsigned short *)d;
-        const unsigned short *s2 = (const unsigned short *)s;
+        uint16_t *d2 = (uint16_t *)d;
+        const uint16_t *s2 = (const uint16_t *)s;
         for (int i = 0; i < number_bytes / 2; i++) {
             d2[i] = s2[i];
         }
     } else {
-        unsigned char *d1 = (unsigned char *)d;
-        const unsigned char *s1 = (const unsigned char *)s;
+        uint8_t *d1 = (uint8_t *)d;
+        const uint8_t *s1 = (const uint8_t *)s;
         for (int i = 0; i < number_bytes; i++) {
             d1[i] = s1[i];
         }
@@ -54,8 +54,8 @@ void* memset(void *dest, int val, int number_bytes) {
     
     // If destination and number of bytes are alligned with a DWORD (4 bytes), set 4 bytes at a time
     if ((d % 4 == 0) && (number_bytes % 4 == 0)) {
-        unsigned int *d4 = (unsigned int *)d;
-        unsigned int dword_val = (unsigned char)val | ((unsigned char)val << 8) | ((unsigned char)val << 16) | ((unsigned char)val << 24);
+        uint32_t *d4 = (uint32_t *)d;
+        uint32_t dword_val = (uint8_t)val | ((uint8_t)val << 8) | ((uint8_t)val << 16) | ((uint8_t)val << 24);
         for (int i = 0; i < number_bytes / 4; i++) {
             d4[i] = dword_val;
         }
@@ -63,8 +63,8 @@ void* memset(void *dest, int val, int number_bytes) {
 
     // If destination and number of bytes are alligned with a WORD (2 bytes), set 2 bytes at a time
     else if ((d % 2 == 0) && (number_bytes % 2 == 0)) {
-        unsigned short *d2 = (unsigned short *)d;
-        unsigned short word_val = (unsigned char)val | ((unsigned char) val << 8);
+        uint16_t *d2 = (uint16_t *)d;
+        uint16_t word_val = (uint8_t)val | ((uint8_t) val << 8);
         for (int i = 0; i < number_bytes / 2; i++) {
             d2[i] = word_val;
         }
@@ -72,8 +72,8 @@ void* memset(void *dest, int val, int number_bytes) {
 
     // If destination and number of bytes are not alligned, set 1 byte at a time
     else {
-        unsigned char *d1 = (unsigned char *)d;
-        unsigned char byte_val = (unsigned char)val;
+        uint8_t *d1 = (uint8_t *)d;
+        uint8_t byte_val = (uint8_t)val;
         for (int i = 0; i < number_bytes; i++) {
             d1[i] = byte_val;
         }

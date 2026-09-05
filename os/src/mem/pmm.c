@@ -2,9 +2,9 @@
 #include "../../include/mem/pmm.h"
 #include "../../include/drivers/screen.h"
 
-static unsigned int *pmm_bitmap = 0; // Bitmap to track used/free memory blocks
-static unsigned int pmm_max_blocks = 0; // Total number of memory blocks
-static unsigned int pmm_used_blocks = 0; // Number of used memory blocks
+static uint32_t *pmm_bitmap = 0; // Bitmap to track used/free memory blocks
+static uint32_t pmm_max_blocks = 0; // Total number of memory blocks
+static uint32_t pmm_used_blocks = 0; // Number of used memory blocks
 
 extern char _kernel_end[]; // End of the kernel, defined in the linker script
 
@@ -14,7 +14,7 @@ extern char _kernel_end[]; // End of the kernel, defined in the linker script
  * @param bit The index of the block to mark as used.
  * @return None
  */
-void pmm_set_bit(unsigned int bit) {
+void pmm_set_bit(uint32_t bit) {
     pmm_bitmap[bit / 32] |= (1 << (bit % 32));
 }
 
@@ -24,7 +24,7 @@ void pmm_set_bit(unsigned int bit) {
  * @param bit The index of the block to mark as free.
  * @return None
  */
-void pmm_clear_bit(unsigned int bit) {
+void pmm_clear_bit(uint32_t bit) {
     pmm_bitmap[bit / 32] &= ~(1 << (bit % 32));
 }
 
@@ -34,7 +34,7 @@ void pmm_clear_bit(unsigned int bit) {
  * @param bit The index of the block to test.
  * @return Returns 0 if the block is free, or a non-zero value if the block is used.
  */
-int pmm_test_bit(unsigned int bit) {
+int pmm_test_bit(uint32_t bit) {
     return pmm_bitmap[bit / 32] & (1 << (bit % 32));
 }
 
@@ -44,11 +44,11 @@ int pmm_test_bit(unsigned int bit) {
  * @return The index of the first free block, or -1 if no free blocks are available.
  */
 int pmm_find_first_free_bit() {
-    unsigned int bitmap_size = (pmm_max_blocks + 31) / 32;
-    for (unsigned int i = 0; i < bitmap_size; i++) {
+    uint32_t bitmap_size = (pmm_max_blocks + 31) / 32;
+    for (uint32_t i = 0; i < bitmap_size; i++) {
         if (pmm_bitmap[i] != 0xFFFFFFFF) {
-            for (unsigned int j = 0; j < 32; j++) {
-                unsigned int bit = 1 << j;
+            for (uint32_t j = 0; j < 32; j++) {
+                uint32_t bit = 1 << j;
                 if ((pmm_bitmap[i] & bit) == 0x00000000) {
                     int frame = i * 32 + j;
                     if (frame < pmm_max_blocks) {
@@ -81,7 +81,7 @@ void *pmm_alloc_block() {
     pmm_set_bit(frame);
     pmm_used_blocks++;
 
-    unsigned int addr = (unsigned int)frame * PMM_BLOCK_SIZE;
+    uint32_t addr = (uint32_t)frame * PMM_BLOCK_SIZE;
     return (void *)addr;
 }
 
@@ -92,8 +92,8 @@ void *pmm_alloc_block() {
  * @return None
  */
 void pmm_free_block(void *p) {
-    unsigned int addr = (unsigned int)p;
-    unsigned int frame = addr / PMM_BLOCK_SIZE;
+    uint32_t addr = (uint32_t)p;
+    uint32_t frame = addr / PMM_BLOCK_SIZE;
 
     if (frame >= pmm_max_blocks) {
         return; // Invalid block address
@@ -115,22 +115,22 @@ void pmm_free_block(void *p) {
  */
 void pmm_init() {
     // Read the E820 memory map from the predefined location (0x8000)
-    unsigned int *count_ptr = (unsigned int *)E820_LOCATION;
-    unsigned int count = *count_ptr;
+    uint32_t *count_ptr = (uint32_t *)E820_LOCATION;
+    uint32_t count = *count_ptr;
     e820_entry_t *entries = (e820_entry_t *)(E820_LOCATION + 4);
 
-    unsigned long long max_memory = 0;
+    uint64_t max_memory = 0;
 
     // Define a local copy of the E820 entries to avoid potential issues with the original memory map being overwritten or modified during initialization
     e820_entry_t local_entries[32];
-    unsigned int local_count = 0;
+    uint32_t local_count = 0;
 
     if (count > 0 && count <= 32) {
         local_count = count;
-        for (unsigned int i = 0; i < local_count; i++) {
+        for (uint32_t i = 0; i < local_count; i++) {
             local_entries[i] = entries[i];
             if (local_entries[i].type == E820_TYPE_USABLE) {
-                unsigned long long top = local_entries[i].base_addr + local_entries[i].length;
+                uint64_t top = local_entries[i].base_addr + local_entries[i].length;
                 if (top > max_memory) {
                     max_memory = top;
                 }
@@ -142,26 +142,26 @@ void pmm_init() {
         max_memory = 32 * 1024 * 1024;
     }
 
-    pmm_max_blocks = (unsigned int)(max_memory / PMM_BLOCK_SIZE);
+    pmm_max_blocks = (uint32_t)(max_memory / PMM_BLOCK_SIZE);
     pmm_used_blocks = pmm_max_blocks;
 
     // Initialize the bitmap at the end of the kernel's memory space
-    pmm_bitmap = (unsigned int *)_kernel_end;
-    unsigned int bitmap_size_bytes = (pmm_max_blocks + 7) / 8;
+    pmm_bitmap = (uint32_t *)_kernel_end;
+    uint32_t bitmap_size_bytes = (pmm_max_blocks + 7) / 8;
     
-    unsigned int total_words = (pmm_max_blocks + 31) / 32;
-    for (unsigned int b = 0; b < total_words; b++) {
+    uint32_t total_words = (pmm_max_blocks + 31) / 32;
+    for (uint32_t b = 0; b < total_words; b++) {
         pmm_bitmap[b] = 0xFFFFFFFF;
     }
 
     // Mark usable memory blocks as free based on the E820 map
     if (local_count > 0) {
-        for (unsigned int i = 0; i < local_count; i++) {
+        for (uint32_t i = 0; i < local_count; i++) {
             if (local_entries[i].type == E820_TYPE_USABLE) {
-                unsigned int start_block = (unsigned int)(local_entries[i].base_addr / PMM_BLOCK_SIZE);
-                unsigned int block_count = (unsigned int)(local_entries[i].length / PMM_BLOCK_SIZE);
+                uint32_t start_block = (uint32_t)(local_entries[i].base_addr / PMM_BLOCK_SIZE);
+                uint32_t block_count = (uint32_t)(local_entries[i].length / PMM_BLOCK_SIZE);
 
-                for (unsigned int k = 0; k < block_count; k++) {
+                for (uint32_t k = 0; k < block_count; k++) {
                     if ((start_block + k) < pmm_max_blocks) {
                         pmm_clear_bit(start_block + k);
                         pmm_used_blocks--;
@@ -171,17 +171,17 @@ void pmm_init() {
         }
     } else {
         kprintf("Warning: No valid E820 map found. Freeing memory from 1 MB to end.\n");
-        for (unsigned int k = 256; k < pmm_max_blocks; k++) {
+        for (uint32_t k = 256; k < pmm_max_blocks; k++) {
             pmm_clear_bit(k);
             pmm_used_blocks--;
         }
     }
 
     // Protect the kernel and bitmap areas by marking them as used
-    unsigned int kernel_and_bitmap_end = ((unsigned int)pmm_bitmap) + bitmap_size_bytes;
-    unsigned int protected_blocks = (kernel_and_bitmap_end / PMM_BLOCK_SIZE) + 1;
+    uint32_t kernel_and_bitmap_end = ((uint32_t)pmm_bitmap) + bitmap_size_bytes;
+    uint32_t protected_blocks = (kernel_and_bitmap_end / PMM_BLOCK_SIZE) + 1;
 
-    for (unsigned int b = 0; b < protected_blocks; b++) {
+    for (uint32_t b = 0; b < protected_blocks; b++) {
         if (b < pmm_max_blocks && !pmm_test_bit(b)) {
             pmm_set_bit(b);
             pmm_used_blocks++;
@@ -194,7 +194,7 @@ void pmm_init() {
  * @details This function provides the total count of memory blocks that the PMM is managing, which is determined during the initialization process based on the system's available physical memory.
  * @return The total number of memory blocks.
  */
-unsigned int pmm_get_total_blocks() {
+uint32_t pmm_get_total_blocks() {
     return pmm_max_blocks;
 }
 
@@ -203,7 +203,7 @@ unsigned int pmm_get_total_blocks() {
  * @details This function provides the count of memory blocks that are currently allocated and in use, which is tracked by the PMM during allocation and deallocation operations.
  * @return The number of memory blocks currently in use.
  */
-unsigned int pmm_get_used_blocks() {
+uint32_t pmm_get_used_blocks() {
     return pmm_used_blocks;
 }
 
@@ -212,6 +212,6 @@ unsigned int pmm_get_used_blocks() {
  * @details This function calculates the number of free memory blocks by subtracting the number of used blocks from the total number of blocks managed by the PMM.
  * @return The number of free memory blocks available for allocation.
  */
-unsigned int pmm_get_free_blocks() {
+uint32_t pmm_get_free_blocks() {
     return pmm_max_blocks - pmm_used_blocks;
 }

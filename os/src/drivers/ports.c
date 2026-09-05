@@ -7,8 +7,8 @@
  * @param port The I/O port number to read from.
  * @return The byte read from the specified I/O port.
  */
-unsigned char inb(unsigned short port) {
-    unsigned char result;
+uint8_t inb(uint16_t port) {
+    uint8_t result;
     __asm__(
         "in %%dx, %%al" :
         "=a" (result) :
@@ -23,7 +23,7 @@ unsigned char inb(unsigned short port) {
  * @param port The I/O port number to write to.
  * @param data The byte to write to the specified I/O port.
  */
-void outb(unsigned short port, unsigned char data) {
+void outb(uint16_t port, uint8_t data) {
     __asm__(
         "out %%al, %%dx" :
         :
@@ -37,8 +37,8 @@ void outb(unsigned short port, unsigned char data) {
  * @param port The I/O port number to read from.
  * @return The word read from the specified I/O port.
  */
-unsigned short inw(unsigned short port) {
-    unsigned short result;
+uint16_t inw(uint16_t port) {
+    uint16_t result;
     __asm__(
         "in %%dx, %%ax" :
         "=a" (result) :
@@ -53,7 +53,7 @@ unsigned short inw(unsigned short port) {
  * @param port The I/O port number to write to.
  * @param data The word to write to the specified I/O port.
  */
-void outw(unsigned short port, unsigned short data) {
+void outw(uint16_t port, uint16_t data) {
     __asm__(
         "out %%ax, %%dx" :
         :

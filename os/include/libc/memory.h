@@ -3,8 +3,9 @@
 #define MEMORY_H
 
 #include <stddef.h>
+#include <stdint.h>
 
-typedef unsigned int uintptr_t;
+typedef uint32_t uintptr_t;
 
 void* memcpy(void *dest, const void *source, int number_bytes);
 void* memset(void *dest, int val, int number_bytes);

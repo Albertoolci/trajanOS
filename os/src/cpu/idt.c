@@ -13,7 +13,7 @@ idt_ptr_t idt_ptr;
  * @param handler The address of the interrupt handler function.
  * @return None
  */
-void set_idt_gate(int n, unsigned int handler) {
+void set_idt_gate(int n, uint32_t handler) {
     idt[n].low_offset = handler & 0xFFFF;
     idt[n].high_offset = (handler >> 16) & 0xFFFF;
     idt[n].sel = 0x08; // Kernel code segment selector
@@ -28,7 +28,7 @@ void set_idt_gate(int n, unsigned int handler) {
  */
 void init_idt() {
     idt_ptr.limit = sizeof(idt_entry_t) * IDT_ENTRIES - 1;
-    idt_ptr.base = (unsigned int)&idt;
+    idt_ptr.base = (uint32_t)&idt;
 }
 
 /**
